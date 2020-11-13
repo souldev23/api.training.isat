@@ -20,7 +20,7 @@ if config_decouple('PRODUCTION', default=False):
 
 app = create_app(enviroment)
 
-users = [{"name":"souldev", "age":32, "active":True},{"name":"riki123", "age":25, "active":False}]
+users = [{"user_name": "souldev", "name": "Saúl García", "mail": "soul23.4ever@gamil.com", "age":32, "active":True}]
 
 @app.errorhandler(400)
 def handle_400_error(e):
@@ -43,7 +43,7 @@ def getUser(user_name):
     user = {}
     for us in users:
         print(us)
-        if us["name"] == user_name:
+        if us["user_name"] == user_name:
             user = us
             break
     if user == {}:
@@ -62,10 +62,12 @@ def addUser():
 @app.route('/v1/user/<string:user_name>/uname', methods=['PUT'])
 def editUser(user_name):
     print(user_name)
-    userFound = [us for us in users if us['name'] == user_name]
+    userFound = [us for us in users if us['user_name'] == user_name]
     print(userFound)
     if(len(userFound)>0):
+        userFound[0]["user_name"] = request.json["user_name"]
         userFound[0]["name"] = request.json["name"]
+        userFound[0]["mail"] = request.json["mail"]
         userFound[0]["age"] = request.json["age"]
         userFound[0]["active"] = request.json["active"]
         resp={"ERR_CODE": 0, "ERR_DESC": "OK", "message":"El usuario se ha actualizado correctamente"}
@@ -77,7 +79,7 @@ def editUser(user_name):
 @app.route('/v1/user/<string:user_name>/uname', methods=["DELETE"])    
 def deleteUser(user_name):
     print(user_name)
-    userFound = [us for us in users if us["name"] == user_name]
+    userFound = [us for us in users if us["user_name"] == user_name]
     if(len(userFound) > 0):
         users.remove(userFound[0])
         resp={"ERR_CODE": 0, "ERR_DESC": "OK", "message":"El usuario se ha eliminado correctamente"}
